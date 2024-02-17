@@ -27,5 +27,5 @@ def handle_form():
 
     return {
         "k_numbers": top_k_numbers,
-        "comparison_table": comparison_table
+        "comparison_table": list_comparisons
     }
