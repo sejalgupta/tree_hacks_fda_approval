@@ -7,6 +7,7 @@ import os
 from chatgpt import ask_gpt
 import re
 import csv
+from sentence_transformers import SentenceTransformer
 
 def retrieve_pinecone(k_number, section_title):
     load_dotenv()
@@ -32,6 +33,39 @@ def retrieve_pinecone(k_number, section_title):
     return "" 
 
 
+def embed_new_device(data):
+        model = SentenceTransformer('all-MiniLM-L6-v2')
+        descript = model.encode(data["Description"])
+        indication = model.encode(data["Indications"]) 
+        #for section in data: 
+            #new_data= new_data + " " + section + ": " + data[section] # concatenate  
+        return [descript,indication] 
+
+def calculate_product_scores_general(data_list):
+    # Find intersecting keys across all dictionaries
+    intersecting_keys = set(data_list[0].keys())
+    for data in data_list[1:]:
+        intersecting_keys &= set(data.keys())
+
+    # Calculate the product of scores for intersecting keys
+    product_scores = {}
+    for key in intersecting_keys:
+        product_score = 1
+        for data in data_list:
+            product_score *= data[key]
+        product_scores[key] = product_score
+
+    # Sort the keys by their product score in ascending order
+    sorted_keys = sorted(product_scores, key=product_scores.get)
+
+    final_list = [(key, product_scores[key]) for key in sorted_keys]
+    results = [] 
+    for x in final_list:
+        results.append(x[0]) 
+    return results
+
+
+
 def predicates(user_data):  
     """
     Given the device description and intended use, get the similar devices
@@ -41,10 +75,68 @@ def predicates(user_data):
 
     Returns:
         list: top 3 k numbers of devices that are similar
-    """    
+    """  
 
-    ## TEMPORARY ##  
-    return ['K201525', 'K221805']
+    PINECONE_API = os.getenv("PINECONE_API_KEY")
+    pc = Pinecone(api_key=PINECONE_API) 
+    index_name = "final-db-510k"
+        #index = pc.Index(index_name)
+        #index.describe_index_stats()
+    index = pc.Index(index_name) 
+    description_embedding = embed_new_device(user_data)
+    descript_embedding = description_embedding[0] 
+    indicat_embedding = description_embedding[1]
+  
+    results_devices = index.query(
+        namespace="ns1",
+        vector=descript_embedding.tolist(),
+        filter={
+            "section_title": "Device Description"
+        },
+        top_k=7,
+        include_metadata=True
+    )
+
+    results_intended_use = index.query(
+        namespace="ns1",
+        vector=indicat_embedding.tolist(),
+        filter={
+            "section_title": "Indications for use"
+        },
+        top_k=7,
+        include_metadata=True
+    )  
+    
+    # get top 3 k numbers 
+# create a matrix of [7x7] and scores 
+    
+    top_3_predicates_devices = {}
+    top_3_predicates_uses = {} 
+    for result in results_devices['matches']:
+        # iterate through and check scores: 
+        knumber = result["metadata"]["k_number"] 
+        score = result["score"] 
+        if knumber not in top_3_predicates_devices: 
+            # say it's decently confident and print score 
+            top_3_predicates_devices[knumber] = score
+    for result in results_intended_use['matches']:
+        # iterate through and check scores: 
+        knumber = result["metadata"]["k_number"] 
+        score = result["score"] 
+        if knumber not in top_3_predicates_uses: 
+            # say it's decently confident and print score 
+            top_3_predicates_uses[knumber] = score
+
+    # if not then it's denovo
+    # take each of these predicates and create a similarity score 
+    
+
+    predicates_list = [top_3_predicates_devices,top_3_predicates_uses] 
+    return calculate_product_scores_general(predicates_list) 
+# 
+
+    
+    #return ['K201525', 'K221805']
 
 def get_vector_db_table_information(k_number, section_title):
     """
