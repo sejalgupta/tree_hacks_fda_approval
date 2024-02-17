@@ -1,3 +1,4 @@
+from helper_code.find_predicates import predicates
 from flask import Flask, render_template_string, request
 app = Flask(__name__)
 
@@ -30,5 +31,12 @@ def handle_form():
     <p>Indication for Use: {indication_for_use}<p>
     <a href="/api/python">Submit another response</a>
     '''
+
+    device_data = {
+        "Device Description": device_description,
+        "Indication for Use": indication_for_use
+    }
+    
+    top_k_numbers = predicates(device_data)
 
     return render_template_string(response_page_html)
