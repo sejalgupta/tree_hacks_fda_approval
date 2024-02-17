@@ -1,6 +1,9 @@
 import json
 import pandas as pd
 from io import StringIO
+from pinecone import Pinecone
+from dotenv import load_dotenv
+import os
 # from llm_requests import ask_gpt
 import re
 
@@ -28,7 +31,27 @@ def get_vector_db_table_information(k_number, section_title):
 
     Returns:
         str: The table content in text format
-    """  
+    """    
+    load_dotenv()
+
+    PINECONE_API = os.getenv("PINECONE_API_KEY")
+    pc = Pinecone(api_key=PINECONE_API) 
+    index_name = "small-sections-510k"
+    index = pc.Index(index_name) 
+
+    results = index.query(
+        filter={
+            "section_title": section_title,
+            "k_number": k_number
+        },
+        top_k=1,
+        include_metadata=True
+    )
+
+    # get the table info 
+    if len(results['matches']) > 0:
+        table_info = results['matches'][0]["metadata"]["text_content"] 
+        return table_info
 
     ## TEMPORARY ##  
     original = [
