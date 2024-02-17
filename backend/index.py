@@ -12,13 +12,6 @@ def handle_form():
     print(f"Device Description: {device_description}")
     print(f"Indication for Use: {indication_for_use}")
     
-    # Generate the response page with the submitted data
-    response_page_html = f'''
-    <p>Device Description {device_description} </p>
-    <p>Indication for Use: {indication_for_use}<p>
-    <a href="/api/python">Submit another response</a>
-    '''
-
     device_data = {
         "Device Description": device_description,
         "Indication for Use": indication_for_use
