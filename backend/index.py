@@ -2,24 +2,11 @@ from helper_code.find_predicates import get_final_comparison_table, predicates
 from flask import Flask, render_template_string, request
 app = Flask(__name__)
 
-@app.route("/api/python", methods=['GET'])
-def view_form():
-    form_html = '''
-    <form action="/api/handle-form" method="post">
-        <label for="device-description">Device Description:</label><br>
-        <input type="text" id="device-description" name="device-description" required><br>
-        <label for="indication-for-use">Indication for Use:</label><br>
-        <input type="text" id="indication-for-use" name="indication-for-use" required><br><br>
-        <input type="submit" value="Submit">
-    </form> 
-    '''
-    return render_template_string(form_html)
-
 @app.route("/api/handle-form", methods=['POST'])
 def handle_form():
     # Retrieve form data
     device_description = request.form['device-description']
-    indication_for_use = request.form['indication-for-use']
+    indication_for_use = request.form['use-indication']
     
     # Process the form data (for demonstration, print it to console)
     print(f"Device Description: {device_description}")
