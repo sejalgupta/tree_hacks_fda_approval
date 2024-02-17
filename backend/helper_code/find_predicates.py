@@ -45,7 +45,8 @@ def embed_new_device(data):
             #new_data= new_data + " " + section + ": " + data[section] # concatenate  
         return [descript,indication] 
 
-def calculate_product_scores_general(data_list):
+
+def calculate_product_scores_general(data_list, texts):
     # Find intersecting keys across all dictionaries
     intersecting_keys = set(data_list[0].keys())
     for data in data_list[1:]:
@@ -62,10 +63,11 @@ def calculate_product_scores_general(data_list):
     # Sort the keys by their product score in ascending order
     sorted_keys = sorted(product_scores, key=product_scores.get)
 
+
     final_list = [(key, product_scores[key]) for key in sorted_keys]
     results = [] 
-    for x in final_list:
-        results.append(x[0]) 
+    for x in final_list: 
+        results.append({'K':x[0], 'D': texts[0][x[0]], 'I': texts[1][x[0]]})
     return results
 
 def predicates(user_data):  
@@ -81,14 +83,23 @@ def predicates(user_data):
 
     PINECONE_API = os.getenv("PINECONE_API_KEY")
     pc = Pinecone(api_key=PINECONE_API) 
-    index_name = "final-db-510k"
+    index_name = "small-sections-510k"
         #index = pc.Index(index_name)
         #index.describe_index_stats()
     index = pc.Index(index_name) 
     description_embedding = embed_new_device(user_data)
     descript_embedding = description_embedding[0] 
     indicat_embedding = description_embedding[1]
-  
+    # search device 
+    """
+    results = index.query(
+        namespace="ns1",
+        vector=description_embedding.tolist(),
+        top_k=7,
+        include_metadata=True
+    )
+    """ 
+    
     results_devices = index.query(
         namespace="ns1",
         vector=descript_embedding.tolist(),
@@ -114,27 +125,34 @@ def predicates(user_data):
     
     top_3_predicates_devices = {}
     top_3_predicates_uses = {} 
+    top_3_predicates_device_text = {}
+    top_3_predicates_uses_text = {}
     for result in results_devices['matches']:
         # iterate through and check scores: 
+        text_device = result["metadata"]["text_content"]
         knumber = result["metadata"]["k_number"] 
         score = result["score"] 
         if knumber not in top_3_predicates_devices: 
             # say it's decently confident and print score 
             top_3_predicates_devices[knumber] = score
+            top_3_predicates_device_text[knumber] = text_device
     for result in results_intended_use['matches']:
         # iterate through and check scores: 
+        text_use = result["metadata"]["text_content"] 
         knumber = result["metadata"]["k_number"] 
         score = result["score"] 
         if knumber not in top_3_predicates_uses: 
             # say it's decently confident and print score 
             top_3_predicates_uses[knumber] = score
+            top_3_predicates_uses_text[knumber] = text_use
 
     # if not then it's denovo
     # take each of these predicates and create a similarity score 
     
 
     predicates_list = [top_3_predicates_devices,top_3_predicates_uses] 
-    return calculate_product_scores_general(predicates_list) 
+    texts = [top_3_predicates_device_text,top_3_predicates_uses_text] 
+    return calculate_product_scores_general(predicates_list,texts)
 
 def get_vector_db_table_information(k_number, section_title):
     """
