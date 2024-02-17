@@ -4,8 +4,33 @@ from io import StringIO
 from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
-# from llm_requests import ask_gpt
+from chatgpt import ask_gpt
 import re
+import csv
+
+def retrieve_pinecone(k_number, section_title):
+    load_dotenv()
+
+    PINECONE_API = os.getenv("PINECONE_API_KEY")
+    pc = Pinecone(api_key=PINECONE_API) 
+    index_name = "small-sections-510k"
+    index = pc.Index(index_name) 
+
+    results = index.query(
+        filter={
+            "section_title": section_title,
+            "k_number": k_number
+        },
+        top_k=1,
+        include_metadata=True
+    )
+
+    # get the table info 
+    if len(results['matches']) > 0:
+        result = results['matches'][0]["metadata"]["text_content"]
+        return result
+    return "" 
+
 
 def predicates(user_data):  
     """
@@ -32,26 +57,8 @@ def get_vector_db_table_information(k_number, section_title):
     Returns:
         str: The table content in text format
     """    
-    load_dotenv()
-
-    PINECONE_API = os.getenv("PINECONE_API_KEY")
-    pc = Pinecone(api_key=PINECONE_API) 
-    index_name = "small-sections-510k"
-    index = pc.Index(index_name) 
-
-    results = index.query(
-        filter={
-            "section_title": section_title,
-            "k_number": k_number
-        },
-        top_k=1,
-        include_metadata=True
-    )
-
-    # get the table info 
-    if len(results['matches']) > 0:
-        table_info = results['matches'][0]["metadata"]["text_content"] 
-        return table_info
+    table_info = retrieve_pinecone(k_number, section_title)
+    return table_info
 
     ## TEMPORARY ##  
     original = [
@@ -129,8 +136,8 @@ def get_ground_truth_table(data):
     df.rename(columns=rename_dict, inplace=True)
 
     # Add in columns for the current device and the comparison
-    df["Subject Device"] = None
-    df["Comparison"] = None
+    df["Subject Device"] = "insert here"
+    df["Comparison"] = "insert here"
 
     return df
 
@@ -139,30 +146,58 @@ def populate_fields_chatgpt(df, device_description, indications_use):
     df.to_csv(output, index=False)  # Set index=False to exclude row indices in the output
     csv_string = output.getvalue()
 
-    print(csv_string)
+    print("ORIGINAL", csv_string)
 
-    # prompt = f"""I have a table that compares a subject device to a predicate device on a number of conditions. 
+    prompt = f"""I have a table that compares a subject device to a predicate device on a number of conditions. 
     
-    # Here is the current version of the table: {csv_string}
+    Here is the current version of the table: {csv_string}
 
-    # Currently, the table is missing information about the subject device and the comparison between the predicate and subject devices. 
+    Currently, the table is missing information about the subject device and the comparison between the predicate and subject devices. 
 
-    # This is the known information about the subject device:
-    # 1. Device Description: {device_description}
-    # 2. Indications for Use: {indications_use}
+    This is the known information about the subject device:
+    1. Device Description: {device_description}
+    2. Indications for Use: {indications_use}
 
-    # Can you please output only an updated version of the table with filling any missing fields with the given information? The format of your output should be in this format {csv_string}
-    # """
+    Can you please output only an updated version of the table with filling any missing fields with the given information? The format of your output should be in this format {csv_string}
+    """
 
-    # response = ask_gpt(prompt)
-    # answer_csv_string = response["choices"][0]["message"]["content"]
+    response = ask_gpt(prompt)
+    print("GPT RESPONSE", response)
 
-    # print(answer_csv_string)
+    answer_csv_string = response["choices"][0]["message"]["content"]
+    print("CSV STRING", answer_csv_string)
     
-    # csv_buffer = StringIO(answer_csv_string)
-    # new_df = pd.read_csv(csv_buffer)
+    csv_buffer = StringIO(answer_csv_string)
 
-    return df
+    data = []
+    csv_reader = csv.reader(csv_buffer)
+    
+    for row in csv_reader:
+        if len(row) == 4:
+            data.append(row)
+
+    print("FINAL LIST OF LISTS", data)
+    
+    return data
+
+def get_final_comparison_table(k_number, section_title, device_description, indications_for_use):
+    """_summary_
+
+    Args:
+        k_number (_type_): _description_
+        section_title (_type_): _description_
+        device_description (_type_): _description_
+        indications_for_use (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """    
+    text = get_vector_db_table_information(k_number, section_title)
+    table = convert_text_to_table(text)
+    df = get_ground_truth_table(table)
+    new_df = populate_fields_chatgpt(df, device_description, indications_for_use)
+
+    return new_df
 
 if __name__ == "__main__":
     
@@ -214,10 +249,5 @@ if __name__ == "__main__":
     df = get_ground_truth_table(table)
 
     new_df = populate_fields_chatgpt(df, device_description, indications_for_use)
-
-    try:
-        new_df = populate_fields_chatgpt(df, device_description, indications_for_use)
-    except:
-        new_df = df
 
     print(new_df)
