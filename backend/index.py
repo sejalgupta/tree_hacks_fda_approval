@@ -1,4 +1,4 @@
-from helper_code.find_predicates import get_final_comparison_table, predicates
+from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
 from flask import Flask, render_template_string, request
 app = Flask(__name__)
 
@@ -18,14 +18,16 @@ def handle_form():
     }
     
     top_k_numbers = predicates(device_data)
+    if len(k_number_information) > 3:
+        k_number_information = k_number_information[:3]
+    
+    k_nums = []
+    for info in k_number_information:
+        k_nums.append(info["K"])
 
-    list_comparisons = []
-
-    for k_number in top_k_numbers:
-        comparison_table = get_final_comparison_table(k_number, "Comparison with Predicate Device", device_description, indication_for_use)
-        list_comparisons.append(comparison_table)
-
+    list_comparisons = parallel_process(k_number_information, device_description, indication_for_use)
+    
     return {
-        "k_numbers": top_k_numbers,
+        "k_numbers": [top_k_numbers[0]],
         "comparison_table": list_comparisons
     }
