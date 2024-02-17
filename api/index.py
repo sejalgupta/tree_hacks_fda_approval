@@ -1,8 +1,8 @@
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request
 app = Flask(__name__)
 
 @app.route("/api/python", methods=['GET'])
-def submit_form():
+def view_form():
     form_html = '''
     <form action="/api/handle-form" method="post">
         <label for="device-description">Device Description:</label><br>
@@ -13,3 +13,22 @@ def submit_form():
     </form> 
     '''
     return render_template_string(form_html)
+
+@app.route("/api/handle-form", methods=['POST'])
+def handle_form():
+    # Retrieve form data
+    device_description = request.form['device-description']
+    indication_for_use = request.form['indication-for-use']
+    
+    # Process the form data (for demonstration, print it to console)
+    print(f"Device Description: {device_description}")
+    print(f"Indication for Use: {indication_for_use}")
+    
+    # Generate the response page with the submitted data
+    response_page_html = f'''
+    <p>Device Description {device_description} </p>
+    <p>Indication for Use: {indication_for_use}<p>
+    <a href="/api/python">Submit another response</a>
+    '''
+
+    return render_template_string(response_page_html)
