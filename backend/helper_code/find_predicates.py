@@ -8,6 +8,14 @@ from chatgpt import ask_gpt
 import re
 import csv
 from sentence_transformers import SentenceTransformer
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+PINECONE_API = os.getenv("PINECONE_API_KEY")
+pc = Pinecone(api_key=PINECONE_API) 
+index_name = "final-db-510k"
+index = pc.Index(index_name) 
 
 def retrieve_pinecone(k_number, section_title):
     load_dotenv()
@@ -38,8 +46,6 @@ def retrieve_pinecone(k_number, section_title):
     return "" 
 
 def embed_new_device(data):
-        model = SentenceTransformer('all-MiniLM-L6-v2')
-
         embeddings = []
         for key, value in data.items():
             embeddings.append(model.encode(value))
@@ -79,13 +85,6 @@ def predicates(user_data):
     Returns:
         list: top 3 k numbers of devices that are similar
     """  
-
-    PINECONE_API = os.getenv("PINECONE_API_KEY")
-    pc = Pinecone(api_key=PINECONE_API) 
-    index_name = "final-db-510k"
-        #index = pc.Index(index_name)
-        #index.describe_index_stats()
-    index = pc.Index(index_name) 
     description_embedding = embed_new_device(user_data)
     descript_embedding = description_embedding[0] 
     indicat_embedding = description_embedding[1]
@@ -250,8 +249,8 @@ def populate_fields_chatgpt(df, device_description, indications_use):
 
 def simple_populate_fields_chatgpt(k_number_info, device_description, indications_use):
     csv_string = '''Comparison Fields,Predicate Device,Subject Device,Comparison
-Brief Device Description,here are some device descriptions,here are some device descriptions,here are the similarities and differences
-Brief Indications for use,here are some uses,here are some uses,here are the similarities and differences'''
+Brief Device Description,here are some device descriptions without any commas,here are some device descriptions without any commas,here are the similarities and differences without any commas
+Brief Indications for use,here are some uses without any commas,here are some uses without any commas,here are the similarities and differences without any commas'''
 
     k_device_description = k_number_info["Device Description"] if "Device Description" in k_number_info else ""
     k_indications_use = k_number_info["Indications for use"] if "Indications for use" in k_number_info else ""
@@ -268,9 +267,16 @@ Brief Indications for use,here are some uses,here are some uses,here are the sim
 
     Can you please output the comparison table with the given information? The format of your output should only be in a CSV string format {csv_string}
     """
+    inner_start_time = time.time()
 
     response = ask_gpt(prompt)
     print("GPT RESPONSE", response)
+
+    inner_end_time = time.time()
+    difference = inner_end_time - inner_start_time
+    print("GPT RESPONSE TIME", difference)
+
+    inner_start_time = time.time()
 
     answer_csv_string = response["choices"][0]["message"]["content"]
     print("CSV STRING", answer_csv_string)
@@ -283,6 +289,10 @@ Brief Indications for use,here are some uses,here are some uses,here are the sim
     for row in csv_reader:
         if len(row) == 4:
             data.append(row)
+
+    inner_end_time = time.time()
+    difference = inner_end_time - inner_start_time
+    print("CSV CREATION TIME", difference)
 
     print("FINAL LIST OF LISTS", data)
     
@@ -319,8 +329,18 @@ def get_final_comparison_table(k_number_info, section_title, device_description,
 
     return data
 
+def parallel_process(top_k_numbers, device_description, indications_for_use):
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(get_final_comparison_table, k_number, "Comparison with Predicate Device", device_description, indications_for_use) for k_number in top_k_numbers]
+        
+        results = []
+        for future in as_completed(futures):
+            results.append(future.result())
+
+    return results
+
 if __name__ == "__main__":
-    
+    start_time = time.time()
     device_description = "The Fitbit ECG App is a software-only medical device used to create, record, display, store and analyze a single channel ECG. The Fitbit ECG App consists of a Device application (“Device app”) on a consumer Fitbit wrist-worn product and a mobile application tile (“mobile app”) on Fitbit’s consumer mobile application. The Device app uses data from electrical sensors on a consumer Fitbit wrist-worn product to create and record an ECG. The algorithm on the Device app analyzes a 30 second recording of the ECG and provides results to the user. Users are able to view their past results as well as a pdf report of the waveform similar to a Lead I ECG on the mobile app."
     indications_for_use = "The Fitbit ECG App is a software-only mobile medical application intended for use with Fitbit wrist-wearable devices to create, record, store, transfer, and display a single channel electrocardiogram (ECG) qualitatively similar to a Lead I ECG. The Fitbit ECG App determines the presence of atrial fibrillation (AFib) or sinus rhythm on a classifiable waveform. The AF detection function is not recommended for users with other known arrhythmias. The Fitbit ECG App is intended for over-the-counter (OTC) use. The ECG data displayed by the Fitbit ECG App is intended for informational use only. The user is not intended to interpret or take clinical action based on the device output without consultation of a qualified healthcare professional. The ECG waveform is meant to supplement rhythm classification for the purposes of discriminating AFib from normal sinus rhythm and not intended to replace traditional methods of diagnosis or treatment. The Fitbit ECG App is not intended for use by people under 22 years old."
     
@@ -330,11 +350,32 @@ if __name__ == "__main__":
     }
     
     k_number_information = predicates(user_data)
+    if len(k_number_information) > 3:
+        k_number_information = k_number_information[:3]
     print(k_number_information)
+
+    end_time = time.time()
+    difference = end_time - start_time
+    print("PINECONE DIFFERENCE", difference)
+
+    # SERIES
+    # start_time = time.time() 
+    # list_comparisons = []
+    # comparison_table = get_final_comparison_table(k_number_information[0], "Comparison with Predicate Device", device_description, indications_for_use)
+    # end_time = time.time()
+    # difference = end_time - start_time
+    # print("GPT DIFFERENCE", difference)
     
-    list_comparisons = []
-    for k_number_info in k_number_information:
-      comparison_table = get_final_comparison_table(k_number_info, "Comparison with Predicate Device", device_description, indications_for_use)
-      list_comparisons.append(comparison_table)
+    # start_time = time.time()
+    # list_comparisons.append(comparison_table)
+    # print(list_comparisons)
+    # end_time = time.time()
+    # difference = end_time - start_time
+    # print("APPEND DIFFERENCE", difference)
     
-    print(list_comparisons)
+    # PARALLEL
+    start_time = time.time() 
+    list_comparisons = parallel_process(k_number_information, device_description, indications_for_use)
+    end_time = time.time()
+    difference = end_time - start_time
+    print("COMPLETE GPT DIFFERENCE FOR ALL", difference)
