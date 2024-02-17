@@ -39,12 +39,11 @@ def retrieve_pinecone(k_number, section_title):
 
 def embed_new_device(data):
         model = SentenceTransformer('all-MiniLM-L6-v2')
-        descript = model.encode(data["Device Description"])
-        indication = model.encode(data["Indication for Use"]) 
-        #for section in data: 
-            #new_data= new_data + " " + section + ": " + data[section] # concatenate  
-        return [descript,indication] 
 
+        embeddings = []
+        for key, value in data.items():
+            embeddings.append(model.encode(value))
+        return embeddings
 
 def calculate_product_scores_general(data_list, texts):
     # Find intersecting keys across all dictionaries
@@ -67,7 +66,7 @@ def calculate_product_scores_general(data_list, texts):
     final_list = [(key, product_scores[key]) for key in sorted_keys]
     results = [] 
     for x in final_list: 
-        results.append({'K':x[0], 'D': texts[0][x[0]], 'I': texts[1][x[0]]})
+        results.append({'K':x[0], '"Device Description': texts[0][x[0]], 'Indications for use': texts[1][x[0]]})
     return results
 
 def predicates(user_data):  
@@ -83,7 +82,7 @@ def predicates(user_data):
 
     PINECONE_API = os.getenv("PINECONE_API_KEY")
     pc = Pinecone(api_key=PINECONE_API) 
-    index_name = "small-sections-510k"
+    index_name = "final-db-510k"
         #index = pc.Index(index_name)
         #index.describe_index_stats()
     index = pc.Index(index_name) 
@@ -166,16 +165,16 @@ def get_vector_db_table_information(k_number, section_title):
     """    
 
     # GET THE TABLE EXTRACTION TO WORK
-    # k_number = k_number_info["k_number"]
-    # table_info = retrieve_pinecone(k_number, section_title)
-    # try:
-    #     table = json.loads(table_info)
-    #     return table
-    # except:
-    #     print("no table in db")
+    k_number = k_number_info["k_number"]
+    table_info = retrieve_pinecone(k_number, section_title)
+    try:
+        table = json.loads(table_info)
+        return table
+    except:
+        print("no table in db")
 
     table = [["Comparison Fields", "Predicate Device"]]
-    for key in ["Device Description", "Indication for Use"]:
+    for key in ["Device Description", "Indication for use"]:
         try:
           table.append([key, k_number_info[key]])
         except:
@@ -249,6 +248,46 @@ def populate_fields_chatgpt(df, device_description, indications_use):
     
     return data
 
+def simple_populate_fields_chatgpt(k_number_info, device_description, indications_use):
+    csv_string = '''Comparison Fields,Predicate Device,Subject Device,Comparison
+Brief Device Description,here are some device descriptions,here are some device descriptions,here are the similarities and differences
+Brief Indications for use,here are some uses,here are some uses,here are the similarities and differences'''
+
+    k_device_description = k_number_info["Device Description"] if "Device Description" in k_number_info else ""
+    k_indications_use = k_number_info["Indications for use"] if "Indications for use" in k_number_info else ""
+
+    prompt = f"""I want to create a table that compares a subject device to a predicate device on a number of conditions for the 510k summary. 
+
+    This is the known information about the subject device:
+    1. Device Description: {device_description}
+    2. Indications for use: {indications_use}
+
+    This is the known information about the predicate device:
+    1. Device Description: {k_device_description}
+    2. Indications for use: {k_indications_use}
+
+    Can you please output the comparison table with the given information? The format of your output should only be in a CSV string format {csv_string}
+    """
+
+    response = ask_gpt(prompt)
+    print("GPT RESPONSE", response)
+
+    answer_csv_string = response["choices"][0]["message"]["content"]
+    print("CSV STRING", answer_csv_string)
+    
+    csv_buffer = StringIO(answer_csv_string)
+
+    data = []
+    csv_reader = csv.reader(csv_buffer)
+    
+    for row in csv_reader:
+        if len(row) == 4:
+            data.append(row)
+
+    print("FINAL LIST OF LISTS", data)
+    
+    return data
+
 def get_final_comparison_table(k_number_info, section_title, device_description, indications_for_use):
     """_summary_
 
@@ -260,10 +299,23 @@ def get_final_comparison_table(k_number_info, section_title, device_description,
 
     Returns:
         _type_: _description_
-    """    
-    table = get_vector_db_table_information(k_number_info, section_title)
-    df = get_ground_truth_table(table)
-    data = populate_fields_chatgpt(df, device_description, indications_for_use)
+    """  
+    # COMPLEX  
+    # table = get_vector_db_table_information(k_number_info, section_title)
+    # df = get_ground_truth_table(table)
+    # data = populate_fields_chatgpt(df, device_description, indications_for_use)
+    
+    # SIMPLE
+    try:
+        data = simple_populate_fields_chatgpt(k_number_info, device_description, indications_for_use)
+    except:
+        k_device_description = k_number_info["Device Description"] if "Device Description" in k_number_info else ""
+        k_indications_use = k_number_info["Indications for use"] if "Indications for use" in k_number_info else ""
+        data = [
+            ["Comparison Fields","Predicate Device","Subject Device","Comparison"],
+            ["Device Description", device_description, k_device_description, ""],
+            ["Indications for use", indications_for_use, k_indications_use, ""],
+        ]
 
     return data
 
@@ -274,7 +326,7 @@ if __name__ == "__main__":
     
     user_data = {
         "Device Description": device_description,
-        "Indication for Use": indications_for_use,
+        "Indications for use": indications_for_use,
     }
     
     k_number_information = predicates(user_data)
