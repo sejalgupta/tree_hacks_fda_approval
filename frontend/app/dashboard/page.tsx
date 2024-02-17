@@ -19,7 +19,9 @@ enum SubScreenTypes {
 export default function PredicateComparison() {
     const [screenType, setScreenType] = React.useState(ScreenTypes.InputForm);
     const [subScreenType, setSubScreenType] = React.useState(SubScreenTypes.Comparison);
-    const [comparisonData, setComparisonData] = React.useState<String[][]>([[]]);
+    const [comparisonData, setComparisonData] = React.useState<String[][][]>([[[]]]);
+    const [comparisonOptions, setComparisonOptions] = React.useState<String[]>([]);
+    const [comparisonIdx, setComparisonIdx] = React.useState<number>(0);
 
     async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         setScreenType(ScreenTypes.Results);
@@ -37,13 +39,15 @@ export default function PredicateComparison() {
         const data = await response.json();
         console.log(data);
         setComparisonData(data["comparison_table"]);
+        setComparisonOptions(data["k_numbers"]);
+        setComparisonIdx(0);
     }
 
     return (
         <main className="container mx-auto my-20">
             {screenType === ScreenTypes.InputForm
                 ? <IntroForm onSubmit={handleFormSubmit} />
-                : <ComparisonTable data={comparisonData} />
+                : <ComparisonTable data={comparisonData[comparisonIdx]} options={comparisonOptions} currentIdx={comparisonIdx} onChange={setComparisonIdx} />
             }
         </main>
     )
