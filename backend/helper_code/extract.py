@@ -159,7 +159,7 @@ def extract_content_from_pdf(pdf_file):
     for section in table_data + text_data:
         # if section["title"] != "":
         if section["title"] in HEADERS_OF_INTEREST:
-            # section["text"] = str(section["text"])
+            section["text"] = str(section["text"])
             pdf_data.append(section)
         
     # Close the PDF file

@@ -6,4 +6,5 @@ python-dotenv
 pillow
 nltk
 PyMuPDF
-fitz
+sentence_transformers
+pinecone-client

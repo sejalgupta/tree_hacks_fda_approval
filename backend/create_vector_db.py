@@ -6,9 +6,9 @@ import random
 from pinecone import Pinecone, ServerlessSpec, Index
 from sentence_transformers import SentenceTransformer
 from helper_code.extract_510k import get_all_links, get_k_numbers
-from helper_code.extract import download_pdf_to_file, extract_text_from_pdf
-from unstructured.partition.pdf import partition_pdf
-from unstructured.chunking.title import chunk_by_title
+from helper_code.extract import download_pdf_to_file, extract_content_from_pdf
+# from unstructured.partition.pdf import partition_pdf
+# from unstructured.chunking.title import chunk_by_title
 from dotenv import load_dotenv
 
 
@@ -109,7 +109,7 @@ def get_sections(url, k_number):
     
     if pdf_file:
 
-        sections = extract_text_from_pdf(filename)
+        sections = extract_content_from_pdf(filename)
 
         return sections
         
@@ -188,4 +188,4 @@ def create_db(input_filename, number_docs, index_name, model_instance, namespace
     
 if __name__ == "__main__":
     model = SentenceTransformer('all-MiniLM-L6-v2')
-    create_db(input_filename="./data/k_numbers.csv", number_docs=5, index_name="final-db-510k", model_instance=model, namespace_name="ns1", specific_k_numbers=[], start=0, end=2104)
+    create_db(input_filename="./data/k_numbers.csv", number_docs=5, index_name="final-db-510k", model_instance=model, namespace_name="ns1", specific_k_numbers=[], start=0, end=1)
