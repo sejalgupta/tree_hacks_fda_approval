@@ -35,8 +35,8 @@ def retrieve_pinecone(k_number, section_title):
 
 def embed_new_device(data):
         model = SentenceTransformer('all-MiniLM-L6-v2')
-        descript = model.encode(data["Description"])
-        indication = model.encode(data["Indications"]) 
+        descript = model.encode(data["Device Description"])
+        indication = model.encode(data["Indication for Use"]) 
         #for section in data: 
             #new_data= new_data + " " + section + ": " + data[section] # concatenate  
         return [descript,indication] 
