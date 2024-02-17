@@ -3,6 +3,7 @@ from PIL import Image
 import fitz
 from nltk.metrics import jaccard_distance
 from nltk.util import ngrams
+import requests
 
 HEADERS = [
     ["Predicate Devices"],
@@ -25,6 +26,15 @@ start_at = "510(k) summary"
 break_at = [
 ] 
 
+# add a delay in between requests 
+def download_pdf_to_file(url, filename):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open(filename, 'wb') as f:
+            f.write(response.content)
+        return filename
+    else:
+        return None
 
 def jaccard_similarity(word1, word2):
     set1 = set(ngrams(word1.lower(), n=2))
