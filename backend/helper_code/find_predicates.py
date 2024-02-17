@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 from io import StringIO
-from llm_requests import ask_gpt
+# from llm_requests import ask_gpt
 import re
 
 def predicates(user_data):  
