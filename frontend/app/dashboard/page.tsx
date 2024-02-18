@@ -23,9 +23,9 @@ enum SubScreenTypes {
     MyTrials = 'myTrials',
 }
 
-// const BACKEND_BASE: string = "http://localhost:3000/";
 // const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
-const BACKEND_BASE:string = "https://5ba3-68-65-175-99.ngrok-free.app/";
+const BACKEND_BASE: string = "http://localhost:3000/";
+// const BACKEND_BASE:string = "http://b245-68-65-175-77.ngrok-free.app/";
 
 export default function PredicateComparison() {
     const [description, setDescription] = React.useState<string>("The Fitbit ECG App is a software-only medical device used to create, record, display, store and analyze a single channel ECG. The Fitbit ECG App consists of a Device application (“Device app”) on a consumer Fitbit wrist-worn product and a mobile application tile (“mobile app”) on Fitbit’s consumer mobile application. The Device app uses data from electrical sensors on a consumer Fitbit wrist-worn product to create and record an ECG. The algorithm on the Device app analyzes a 30 second recording of the ECG and provides results to the user. Users are able to view their past results as well as a pdf report of the waveform similar to a Lead I ECG on the mobile app.");
@@ -52,6 +52,7 @@ export default function PredicateComparison() {
         const response = await fetch(`${BACKEND_BASE}api/handle-form`, {
             method: 'POST',
             body: formData,
+            mode: "no-cors",
         });
         const data = await response.json();
         console.log({data});
@@ -78,6 +79,7 @@ export default function PredicateComparison() {
         const response = await fetch(`${BACKEND_BASE}api/similar-trials`, {
             method: 'POST',
             body: formData,
+            mode: "no-cors"
         });
         const data = await response.json();
         console.log({data});
@@ -109,6 +111,7 @@ export default function PredicateComparison() {
             const response = await fetch(`${BACKEND_BASE}api/handle-form`, {
                 method: 'POST',
                 body: formData,
+                mode: "no-cors"
             });
             const data = await response.json();
             console.log(data);
@@ -127,6 +130,7 @@ export default function PredicateComparison() {
         const response = await fetch(`${BACKEND_BASE}api/generate-trial`, {
             method: 'POST',
             body: formData,
+            mode: "no-cors"
         });
         const data = await response.json();
         const trial = data["trial-info"];
