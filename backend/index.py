@@ -2,7 +2,14 @@ from helper_code.find_similar_clinical_trial import get_all_similar_trials
 from helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
 from flask import Flask, render_template_string, request, redirect, url_for
+from dotenv import load_dotenv
+import nomic
+import os
+
 app = Flask(__name__)
+
+load_dotenv()
+nomic.login(os.getenv("NOMIC_API_KEY"))
 
 @app.route("/api/python")
 def go_to_dashboard():

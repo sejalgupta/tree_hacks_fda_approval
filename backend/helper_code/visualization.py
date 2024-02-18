@@ -7,7 +7,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-nomic.login(os.getenv("NOMIC_API_KEY"))
 
 PINECONE_API = os.getenv("PINECONE_API_KEY")
 pc = Pinecone(api_key=PINECONE_API) 
