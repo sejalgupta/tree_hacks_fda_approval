@@ -14,8 +14,10 @@ enum SubScreenTypes {
     Comparison = 'comparison',
     Workflow = 'workflow',
     PredicateVisualization = 'predicateVisualization'
-
 }
+
+const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
+// const BACKEND_BASE: string = "http://localhost:3000/";
 
 export default function PredicateComparison() {
     const [description, setDescription] = React.useState<string>("The Fitbit ECG App is a software-only medical device used to create, record, display, store and analyze a single channel ECG. The Fitbit ECG App consists of a Device application (“Device app”) on a consumer Fitbit wrist-worn product and a mobile application tile (“mobile app”) on Fitbit’s consumer mobile application. The Device app uses data from electrical sensors on a consumer Fitbit wrist-worn product to create and record an ECG. The algorithm on the Device app analyzes a 30 second recording of the ECG and provides results to the user. Users are able to view their past results as well as a pdf report of the waveform similar to a Lead I ECG on the mobile app.");
@@ -36,7 +38,7 @@ export default function PredicateComparison() {
         console.log({e});
         console.log(e.target);
 
-        const response = await fetch(`api/handle-form`, {
+        const response = await fetch(`${BACKEND_BASE}api/handle-form`, {
             method: 'POST',
             body: formData,
         });
@@ -77,7 +79,7 @@ export default function PredicateComparison() {
             // formData.append('k-number-information', String(comparisonOptions[k_number]));
             console.log(formData.entries());
 
-            const response = await fetch(`api/handle-form`, {
+            const response = await fetch(`${BACKEND_BASE}api/handle-form`, {
                 method: 'POST',
                 body: formData,
             });
