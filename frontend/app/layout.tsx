@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className} id="body">
+      <body className={inter.className + " bg-neutral-100 text-gray-700"} id="body">
         {children}
       </body>
       <PrelineScript />

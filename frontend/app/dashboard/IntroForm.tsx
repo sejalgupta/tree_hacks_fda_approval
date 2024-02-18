@@ -18,15 +18,15 @@ function IntroForm(props: {
                     <textarea
                         id="device-description"
                         name="device-description"
-                        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
-                        rows={3}
+                        className="py-3 px-4 block w-full text-grey-800 border-gray-700 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
+                        rows={5}
                         placeholder="Say hi, we'll be happy to chat with you."
                         aria-describedby="hs-textarea-helper-text"
                         value={props.description}
                         onChange={(e) => props.setDescription(e.target.value)}
                     ></textarea>
                     <p className="text-xs text-gray-500 mt-2" id="hs-textarea-helper-text">
-                        We'll get back to you soon.
+                        Please provide a brief description of your device.
                     </p>
                 </div>
                 <div className="form-group my-5">
@@ -36,15 +36,15 @@ function IntroForm(props: {
                     <textarea
                         id="use-indication"
                         name="use-indication"
-                        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" 
-                        rows={3} 
+                        className="py-3 px-4 block w-full border-gray-700 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none" 
+                        rows={5} 
                         placeholder="Say hi, we'll be happy to chat with you." 
                         aria-describedby="hs-textarea-helper-text"
                         value={props.indication}
                         onChange={(e) => props.setIndication(e.target.value)}
                     ></textarea>
                     <p className="text-xs text-gray-500 mt-2" id="hs-textarea-helper-text">
-                        We'll get back to you soon.
+                        What is the intended use of your device?
                     </p>
                 </div>
                 <div className="form-group my-5 text-center">
