@@ -1,6 +1,6 @@
 import React from "react";
 import Chatbox from "./Chatbox";
-import WorkflowData from "./WorkflowData";
+import WorkflowData from "../../components/workflowData";
 
 function SingleBox({ title, description, guidance_text, guidance_link, display }) {
 	const truncuate_style = {
