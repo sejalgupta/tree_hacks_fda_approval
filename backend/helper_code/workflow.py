@@ -1,5 +1,8 @@
 
 #from tabula import read_pdf
+import json
+
+
 statement_before = "have to mention why something isn't applicable"
 fda_steps = {"IDE_Application": "An investigational device exemption (IDE) allows the investigational device to be used in a clinical study in order to collect safety and effectiveness data. Clinical studies are most often conducted to support a PMA. Only a small percentage of 510(k)s require clinical data to support the application.",
             "Submission Type":"Identification of key information that may be useful to FDA in the initial processing and review of the 510(k) submission, including content from current Form FDA 3514, Section A. 23",
@@ -86,4 +89,20 @@ def generate_your_workflow(responses):
     
     #if x in responses: 
         #print("yes")# go through conditions and make all those lines much bigger based on yes vs no  
-generate_all_workflows()
+# generate_all_workflows()
+            
+if __name__ == "__main__":
+    descriptions = {
+        "steps": {}, # {description: str, guidance: {name: str, link: str}, condition: int}
+        "conditions": [] # str
+    }
+    for title in Condition:
+        descriptions["conditions"].append(Condition[title])
+    for title in fda_steps:
+        descriptions["steps"][title] = {
+            "description": fda_steps[title],
+            "guidance": {"name": Guidance_docs[title][0], "link": Guidance_docs[title][1]} if title in Guidance_docs else None,
+            "condition": descriptions["conditions"].index(Condition[title]) if title in Condition else None
+        }
+    with open("workflow.json", "w") as f:
+        json.dump(descriptions, f, indent=4)
