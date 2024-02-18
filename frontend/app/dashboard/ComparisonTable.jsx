@@ -3,7 +3,7 @@ import React from "react";
 function ComparisonTable({ data, options, currentId, onChange }) {
 	console.log({data, options, currentId, onChange});
   return (
-    <section className="max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+    <section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
       <div className="h-full max-w-full">
           <header className="px-5 py-4 border-b border-gray-100">
 				<h2 className="font-semibold text-gray-800">Predicate Comparison</h2>

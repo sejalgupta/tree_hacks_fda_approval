@@ -8,7 +8,7 @@ function IntroForm(props: {
         setIndication: (indication: string) => void,
     }) {
     return (
-        <section id="intro-form">
+        <section id="intro-form" className="container mx-auto">
             <h1 className="text-center">Enter details of your device</h1>
             <form onSubmit={props.onSubmit} id="info-form">
                 <div className="form-group my-5">

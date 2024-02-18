@@ -2,7 +2,7 @@ import React from "react";
 import Chatbox from "./Chatbox";
 import WorkflowData from "./WorkflowData";
 
-function SingleBox({ title, description, guidance, display }) {
+function SingleBox({ title, description, guidance_text, guidance_link, display }) {
 	const truncuate_style = {
 		"overflow": "hidden",
 		"text-overflow": "ellipsis",
@@ -11,13 +11,14 @@ function SingleBox({ title, description, guidance, display }) {
 				"line-clamp": "4",
 		"-webkit-box-orient": "vertical",
 	}
+	
 	return (
 		<div className="hs-tooltip [--trigger:click] sm:[--placement:right]">
 		  <div className="hs-tooltip-toggle max-w-xs p-4 flex items-center gap-x-3 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
 		
 			{/* User Content */}
-			<div className={"bg-white rounded-xl dark:bg-slate-900"}>
-				<h2 className="text-lg font-bold text-gray-800 dark:text-white">
+			<div className={"bg-white rounded-xl dark:bg-slate-900" + (display ? " border-t-4 border-t-blue-600" : "")} style={{minHeight: "120px"}}>
+				<h2 className="text-lg font-semibold text-gray-800 dark:text-white" style={{fontSize: "1.2em", wordBreak: "break-word"}}>
 					{ title }
 				</h2>
 				{/* <p className="mt-1 text-xs font-medium uppercase text-gray-500 dark:text-gray-500">
@@ -50,12 +51,13 @@ function SingleBox({ title, description, guidance, display }) {
 			  {/* End List */}
 		
 			  {/* Footer */}
-			  { guidance && 
+			  <p>{guidance_text}</p>
+			  { guidance_text && 
 			  	
-			  <div className="py-2 px-4 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
-				Helpful links: <a href={guidance.link} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">{guidance.name}</a>
-			</div>
-			}
+					<div className="py-2 px-4 flex justify-between items-center bg-gray-100 dark:bg-gray-800">
+						Helpful links: <a href={guidance_link} className="text-blue-600 dark:text-blue-400 hover:underline" target="_blank">{guidance_text}</a>
+					</div>
+				}
 			  {/* End Footer */}
 			</div>
 			{/* End Popover Content */}
@@ -66,22 +68,38 @@ function SingleBox({ title, description, guidance, display }) {
 }
 
 function Workflow() {
+	const defaultAnswer = [];
+	WorkflowData.conditions.forEach((condition, index) => {
+		defaultAnswer.push(true);
+	});
+	const [questionAnswers, setQuestionAnswers] = React.useState(defaultAnswer);
+
+	function updateAnswers(index, value) {
+		console.log("Updating answers " + index + " to " + value);
+		let newAnswers = [...questionAnswers];
+		newAnswers[index] = value;
+		setQuestionAnswers(newAnswers);
+	}
+
   	return (
-    	<section className="max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
-			<div className="grid grid-cols-4 gap-4">
-				
+    	<section className="max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4 grid grid-cols-3">
+			<div className="grid grid-cols-4 gap-4 col-span-2">
 				{ Object.entries(WorkflowData.steps).map(([step, info], index) => {
+					const display = info.condition == null ? true : questionAnswers[info.condition];
 					return (
-						<SingleBox key={"single-box-" + index} title={step} description={info.description} />
+						<SingleBox 
+							key={"single-box-" + index + "-" + display ? "true" : "false"}
+							title={step}
+							description={info.description}
+							guidance_text={info.guidance != null ? info.guidance.name : ""}
+							guidance_link={info.guidance != null ? info.guidance.link : ""} 
+							display={info.condition == null ? true : questionAnswers[info.condition]}
+						/>
 					);
 				})}
-				{/* <SingleBox title="Step 1" description="This is the first step in the process." />
-				<SingleBox title="Step 2" description="This is the second step in the process." />
-				<SingleBox title="Step 3" description="This is the third step in the process." />
-				<SingleBox title="Step 4" description="This is the fourth step in the process." /> */}
 			</div>
 			<div id="chatbox">
-				<Chatbox />
+				<Chatbox questions={WorkflowData.conditions} answers={questionAnswers} updateAnswers={updateAnswers} />
 			</div>
   		</section>
   	);

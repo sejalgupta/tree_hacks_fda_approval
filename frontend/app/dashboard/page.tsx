@@ -91,7 +91,7 @@ export default function PredicateComparison() {
     }
 
     return (
-        <main className="container mx-auto my-20">
+        <main className="my-20">
             {screenType === ScreenTypes.InputForm
                 ? <IntroForm
                     onSubmit={handleFormSubmit}
