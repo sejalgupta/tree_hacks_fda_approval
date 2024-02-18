@@ -13,11 +13,12 @@ enum ScreenTypes {
 enum SubScreenTypes {
     Comparison = 'comparison',
     Workflow = 'workflow',
-    PredicateVisualization = 'predicateVisualization'
+    PredicateVisualization = 'predicateVisualization',
+    ClinicalTrials = 'clinicalTrials',
 }
 
-const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
-// const BACKEND_BASE: string = "http://localhost:3000/";
+// const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
+const BACKEND_BASE: string = "http://localhost:3000/";
 
 export default function PredicateComparison() {
     const [description, setDescription] = React.useState<string>("The Fitbit ECG App is a software-only medical device used to create, record, display, store and analyze a single channel ECG. The Fitbit ECG App consists of a Device application (“Device app”) on a consumer Fitbit wrist-worn product and a mobile application tile (“mobile app”) on Fitbit’s consumer mobile application. The Device app uses data from electrical sensors on a consumer Fitbit wrist-worn product to create and record an ECG. The algorithm on the Device app analyzes a 30 second recording of the ECG and provides results to the user. Users are able to view their past results as well as a pdf report of the waveform similar to a Lead I ECG on the mobile app.");
@@ -27,6 +28,7 @@ export default function PredicateComparison() {
     const [comparisonData, setComparisonData] = React.useState<Record<string, String[][]>>({});
     const [comparisonOptions, setComparisonOptions] = React.useState<{"K": string, "Device Description": string, "Indications for use": string}[]>([]);
     const [comparisonId, setComparisonId] = React.useState<string>("");
+    const [clinicalTrials, setClinicalTrials] = React.useState<string[][]>();
 
     async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         setScreenType(ScreenTypes.Results);
@@ -58,6 +60,19 @@ export default function PredicateComparison() {
         console.log({data});
         console.log({table});
         console.log({k_number});
+    }
+
+    async function handleClinicalTrials() {
+        setSubScreenType(SubScreenTypes.ClinicalTrials);
+        let formData = new FormData();
+        formData.append('device-description', description);
+        const response = await fetch(`${BACKEND_BASE}api/similar-trials`, {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+        console.log({data});
+        setClinicalTrials(data["all-trials"]);
     }
 
     async function handleChangeComparison(k_number: string) {
