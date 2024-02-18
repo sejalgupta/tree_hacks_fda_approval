@@ -2,6 +2,7 @@ import os
 import requests
 from dotenv import load_dotenv
 
+load_dotenv()
 api_key = os.getenv("OPEN_AI_KEY")
 
 def ask_gpt(prompt):

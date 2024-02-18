@@ -4,7 +4,7 @@ from io import StringIO
 from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
-from .chatgpt import ask_gpt
+from chatgpt import ask_gpt
 import re
 import csv
 from sentence_transformers import SentenceTransformer
@@ -19,14 +19,8 @@ index = pc.Index(index_name)
 
 def retrieve_pinecone(k_number, section_title):
     load_dotenv()
-
-    model = SentenceTransformer('all-MiniLM-L6-v2')
+    
     embedding = model.encode("")
-
-    PINECONE_API = os.getenv("PINECONE_API_KEY")
-    pc = Pinecone(api_key=PINECONE_API) 
-    index_name = "final-db-510k"
-    index = pc.Index(index_name) 
 
     results = index.query(
         vector=embedding.tolist(),
