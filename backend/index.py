@@ -1,5 +1,5 @@
-from backend.helper_code.find_similar_clinical_trial import get_all_similar_trials
-from backend.helper_code.visualization import visualize
+from helper_code.find_similar_clinical_trial import get_all_similar_trials
+from helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
 from flask import Flask, render_template_string, request, redirect, url_for
 app = Flask(__name__)

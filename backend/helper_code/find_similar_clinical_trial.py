@@ -3,7 +3,6 @@ from io import StringIO
 from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
-from chatgpt import ask_gpt
 import re
 import csv
 from sentence_transformers import SentenceTransformer
