@@ -5,6 +5,7 @@ import IntroForm from './IntroForm'
 import Workflow from './Workflow'
 import ClinicalTrials from './ClinicalTrials'
 import TrialVisualization from './TrialVisualization'
+import PredicateVisualization from './PredicateVisualization'
 import Table from './Table'
 import React from 'react';
 
@@ -17,6 +18,7 @@ enum SubScreenTypes {
     Comparison = 'comparison',
     Workflow = 'workflow',
     PredicateVisualization = 'predicateVisualization',
+    TrialVisualization = 'trialVisualization',
     ClinicalTrials = 'clinicalTrials',
     MyTrials = 'myTrials',
 }
@@ -204,6 +206,13 @@ export default function PredicateComparison() {
                         </button>
                         <button
                             type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.TrialVisualization)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"Visualize"}
+                        </button>
+                        <button
+                            type="button"
                             onClick={generateTrial}
                             className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
@@ -213,7 +222,7 @@ export default function PredicateComparison() {
                 </>;
             case SubScreenTypes.MyTrials:
                 return myTrial && <section className='container mx-auto'>
-                    <h1 className='text-2xl text-center'>Possible clinical trial for your device</h1>
+                    <h1 className="text-2xl font-semibold text-gray-800 text-center mb-6">Possible clinical trial for your device</h1>
                     <Table data={myTrial} />
                     <div className='w-full text-center my-5'>
                         <button
@@ -227,11 +236,24 @@ export default function PredicateComparison() {
                 </section>;
             case SubScreenTypes.PredicateVisualization:
                 return <>
-                    <TrialVisualization deviceDescription={description} useIndication={indication} />
+                    <PredicateVisualization deviceDescription={description} useIndication={indication} />
                     <div className='container mx-auto w-full text-center'>
                         <button
                             type="button"
                             onClick={() => setSubScreenType(SubScreenTypes.Comparison)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
+                    </div>
+                </>;
+            case SubScreenTypes.TrialVisualization:
+                return <>
+                    <TrialVisualization deviceDescription={description} useIndication={indication} />
+                    <div className='container mx-auto w-full text-center'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.ClinicalTrials)}
                             className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
                             {"< Back"}

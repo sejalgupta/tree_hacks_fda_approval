@@ -41,9 +41,12 @@ const PredicateVisualization = ({ deviceDescription, useIndication}) => {
     };
 
     return (
-        <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            {iframeUrl && <iframe src={iframeUrl} title="Predicate Visualization" style={{width: '80%', height: '80%', border: 'none'}} />}
-        </div>
+        <section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+            <h1 className="font-semibold text-gray-800 text-2xl text-center">Visualizing Similar Predicate Devices</h1>
+            <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                {iframeUrl && <iframe src={iframeUrl} title="Predicate Visualization" style={{width: '80%', height: '80%', border: 'none'}} />}
+            </div>
+        </section>
     );
 };
 

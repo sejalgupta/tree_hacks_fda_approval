@@ -41,10 +41,12 @@ const TrialVisualization = ({ deviceDescription, useIndication}) => {
     };
 
     return (
-        <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-            <h1 className='text-2xl'>Visualization of similar devices</h1>
-            {iframeUrl && <iframe src={iframeUrl} title="Trial Visualization" style={{width: '80%', height: '80%', border: 'none'}} />}
-        </div>
+        <section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+            <h1 className="font-semibold text-gray-800 text-2xl text-center">Visualizing Similar Clinical Trials</h1>
+            <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                {iframeUrl && <iframe src={iframeUrl} title="Trial Visualization" style={{width: '80%', height: '80%', border: 'none'}} />}
+            </div>
+        </section>
     );
 };
 

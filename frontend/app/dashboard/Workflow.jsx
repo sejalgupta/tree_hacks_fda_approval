@@ -82,25 +82,27 @@ function Workflow() {
 	}
 
   	return (
-    	<section className="mx-3 max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4 grid grid-cols-3">
-			<h1 className="text-2xl font-semibold text-gray-800">Your 510(k) application workflow</h1>
-			<div className="grid grid-cols-3 gap-5 col-span-2">
-				{ Object.entries(WorkflowData.steps).map(([step, info], index) => {
-					const display = info.condition == null ? true : questionAnswers[info.condition];
-					return (
-						<SingleBox 
-							key={"single-box-" + index + "-" + display ? "true" : "false"}
-							title={step}
-							description={info.description}
-							guidance_text={info.guidance != null ? info.guidance.name : ""}
-							guidance_link={info.guidance != null ? info.guidance.link : ""} 
-							display={info.condition == null ? true : questionAnswers[info.condition]}
-						/>
-					);
-				})}
-			</div>
-			<div id="chatbox" className="rounded-lg border-gray-300">
-				<Chatbox questions={WorkflowData.conditions} answers={questionAnswers} updateAnswers={updateAnswers} />
+    	<section className="mx-3 max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+			<h1 className="text-2xl font-semibold text-gray-800 text-center mb-6">Your 510(k) application workflow</h1>
+			<div className="grid grid-cols-3">
+				<div className="grid grid-cols-3 gap-5 col-span-2">
+					{ Object.entries(WorkflowData.steps).map(([step, info], index) => {
+						const display = info.condition == null ? true : questionAnswers[info.condition];
+						return (
+							<SingleBox 
+								key={"single-box-" + index + "-" + display ? "true" : "false"}
+								title={step}
+								description={info.description}
+								guidance_text={info.guidance != null ? info.guidance.name : ""}
+								guidance_link={info.guidance != null ? info.guidance.link : ""} 
+								display={info.condition == null ? true : questionAnswers[info.condition]}
+							/>
+						);
+					})}
+				</div>
+				<div id="chatbox" className="rounded-lg border-gray-300">
+					<Chatbox questions={WorkflowData.conditions} answers={questionAnswers} updateAnswers={updateAnswers} />
+				</div>
 			</div>
   		</section>
   	);
