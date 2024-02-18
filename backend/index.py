@@ -11,7 +11,7 @@ import nomic
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "https://tree-hacks-fda-approval-n8ognjakq-treehacks.vercel.app"}})
 
 nomic.login(os.getenv("NOMIC_API_KEY"))
 
