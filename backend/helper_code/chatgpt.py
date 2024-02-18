@@ -13,7 +13,7 @@ def ask_gpt(prompt):
     payload = {
         "model": "gpt-4-turbo-preview",
         "messages": [{"role": "user", "content": prompt}],
-        "max_tokens": 4096
+        "max_tokens": 1024
     }
     response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
     if response.status_code == 200:
