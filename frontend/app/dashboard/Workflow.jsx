@@ -13,11 +13,11 @@ function SingleBox({ title, description, guidance_text, guidance_link, display }
 	}
 	
 	return (
-		<div className="hs-tooltip [--trigger:click] sm:[--placement:right]">
+		<div className={"hs-tooltip [--trigger:click] sm:[--placement:right] rounded-xl" + (display ? " border-t-4 border-t-blue-600" : " opacity-30")}>
 		  <div className="hs-tooltip-toggle max-w-xs p-4 flex items-center gap-x-3 bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
 		
 			{/* User Content */}
-			<div className={"bg-white rounded-xl dark:bg-slate-900" + (display ? " border-t-4 border-t-blue-600" : "")} style={{minHeight: "120px"}}>
+			<div className={"bg-white rounded-xl dark:bg-slate-900"} style={{minHeight: "120px"}}>
 				<h2 className="text-lg font-semibold text-gray-800 dark:text-white" style={{fontSize: "1.2em", wordBreak: "break-word"}}>
 					{ title }
 				</h2>
@@ -82,8 +82,9 @@ function Workflow() {
 	}
 
   	return (
-    	<section className="max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4 grid grid-cols-3">
-			<div className="grid grid-cols-4 gap-4 col-span-2">
+    	<section className="mx-3 max-w-full antialiased bg-gray-100 text-gray-600 min-h-screen p-4 grid grid-cols-3">
+			<h1 className="text-2xl font-semibold text-gray-800">Your 510(k) application workflow</h1>
+			<div className="grid grid-cols-3 gap-5 col-span-2">
 				{ Object.entries(WorkflowData.steps).map(([step, info], index) => {
 					const display = info.condition == null ? true : questionAnswers[info.condition];
 					return (
@@ -98,7 +99,7 @@ function Workflow() {
 					);
 				})}
 			</div>
-			<div id="chatbox">
+			<div id="chatbox" className="rounded-lg border-gray-300">
 				<Chatbox questions={WorkflowData.conditions} answers={questionAnswers} updateAnswers={updateAnswers} />
 			</div>
   		</section>

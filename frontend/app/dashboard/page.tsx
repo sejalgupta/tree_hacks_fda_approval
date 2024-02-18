@@ -23,7 +23,7 @@ enum SubScreenTypes {
 
 // const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
 const BACKEND_BASE: string = "http://localhost:3000/";
-// const BACKEND_BASE:string = "https://5ba3-68-65-175-99.ngrok-free.app";
+// const BACKEND_BASE:string = "https://5ba3-68-65-175-99.ngrok-free.app/";
 
 export default function PredicateComparison() {
     const [description, setDescription] = React.useState<string>("The Fitbit ECG App is a software-only medical device used to create, record, display, store and analyze a single channel ECG. The Fitbit ECG App consists of a Device application (“Device app”) on a consumer Fitbit wrist-worn product and a mobile application tile (“mobile app”) on Fitbit’s consumer mobile application. The Device app uses data from electrical sensors on a consumer Fitbit wrist-worn product to create and record an ECG. The algorithm on the Device app analyzes a 30 second recording of the ECG and provides results to the user. Users are able to view their past results as well as a pdf report of the waveform similar to a Lead I ECG on the mobile app.");
@@ -38,6 +38,7 @@ export default function PredicateComparison() {
 
     async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         setScreenType(ScreenTypes.Results);
+        setSubScreenType(SubScreenTypes.Comparison);
         e.preventDefault();
         // TODO: Fetch data from /api/html-form and update comparisonData
         let formData = new FormData(e.target as HTMLFormElement);
@@ -145,33 +146,47 @@ export default function PredicateComparison() {
                         currentId={comparisonId}
                         onChange={handleChangeComparison}
                     />
-                    <div className='container mx-auto flex flex-justify'>
+                    <div className='container mx-auto w-full text-center'>
+                        <button
+                            type="button"
+                            onClick={() => setScreenType(ScreenTypes.InputForm)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
                         <button
                             type="button"
                             onClick={() => setSubScreenType(SubScreenTypes.PredicateVisualization)}
-                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
                             {"Visualize"}
                         </button>
                         <button
                             type="button"
                             onClick={() => setSubScreenType(SubScreenTypes.Workflow)}
-                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                            {"Next>"}
+                            {"Next >"}
                         </button>
                     </div>
                 </>;
             case SubScreenTypes.Workflow:
                 return <>
                     <Workflow />
-                    <div className='container mx-auto flex flex-justify'>
+                    <div className='container mx-auto w-full text-center'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.Comparison)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
                         <button
                             type="button"
                             onClick={handleClinicalTrials}
-                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                            {"Find Clinical Trials"}
+                            {"Get similar clinical trials >"}
                         </button>
                     </div>
                     {/* <button onClick={handleClinicalTrials}>Find Clinical Trials</button> */}
@@ -179,20 +194,50 @@ export default function PredicateComparison() {
             case SubScreenTypes.ClinicalTrials:
                 return <>
                     <ClinicalTrials trials={clinicalTrials} key={clinicalTrials?.length} />
-                    <div className='container mx-auto text-center'>
+                    <div className='container mx-auto w-full text-center'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.Workflow)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
                         <button
                             type="button"
                             onClick={generateTrial}
-                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
                         >
-                            {"Find Clinical Trials"}
+                            {"Generate my clinical trials >"}
                         </button>
                     </div>
                 </>;
             case SubScreenTypes.MyTrials:
-                return myTrial && <Table data={myTrial} />;
+                return myTrial && <section className='container mx-auto'>
+                    <h1 className='text-2xl text-center'>Possible clinical trial for your device</h1>
+                    <Table data={myTrial} />
+                    <div className='w-full text-center my-5'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.ClinicalTrials)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
+                    </div>
+                </section>;
             case SubScreenTypes.PredicateVisualization:
-                return <TrialVisualization deviceDescription={description} useIndication={indication} />;
+                return <>
+                    <TrialVisualization deviceDescription={description} useIndication={indication} />
+                    <div className='container mx-auto w-full text-center'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.Comparison)}
+                            className="mx-4 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"< Back"}
+                        </button>
+                    </div>
+                </>;
         }
     }
 

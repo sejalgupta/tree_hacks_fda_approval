@@ -42,6 +42,7 @@ const TrialVisualization = ({ deviceDescription, useIndication}) => {
 
     return (
         <div style={{height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            <h1 className='text-2xl'>Visualization of similar devices</h1>
             {iframeUrl && <iframe src={iframeUrl} title="Trial Visualization" style={{width: '80%', height: '80%', border: 'none'}} />}
         </div>
     );

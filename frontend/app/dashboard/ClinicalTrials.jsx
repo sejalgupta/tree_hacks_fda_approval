@@ -8,8 +8,8 @@ function ClinicalTrials({ trials }) {
     	<section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
             <div className="h-full max-w-full">
                 <header className="px-5 py-4 border-b border-gray-100">
-                        <h2 className="font-semibold text-gray-800">Similar Clinical Trials</h2>
-                        <div className="flex items-center justify-between mt-2">
+                        <h1 className="font-semibold text-gray-800 text-2xl text-center">Similar Clinical Trials</h1>
+                        <div className="flex items-center justify-center mt-2">
                             <ul class="flex flex-col sm:flex-row">
                             { trials && trials.map((option, index) => {
                                 console.log({currentIdx, option});
