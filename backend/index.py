@@ -6,23 +6,28 @@ from helper_code.find_similar_clinical_trial import get_all_similar_trials
 from helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
 from flask import Flask, render_template_string, request, redirect, url_for
+from flask_cors import CORS, cross_origin
 import nomic
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 nomic.login(os.getenv("NOMIC_API_KEY"))
 
 
 @app.route("/api/home")
+@cross_origin()
 def home():
     return "Hello, hello!"
 
 @app.route("/api/python")
+@cross_origin()
 def go_to_dashboard():
     return redirect('/dashboard')
 
 @app.route("/api/handle-form", methods=['POST'])
+@cross_origin()
 def handle_form():
     # Retrieve form data
     # device_description = request.form['device-description']
@@ -81,6 +86,7 @@ def handle_form():
     }
 
 @app.route("/api/visualize-predicate", methods=['POST'])
+@cross_origin()
 def get_visualization_predicate():
     device_description = request.form['device-description']
     indication_for_use = request.form['use-indication']
@@ -96,6 +102,7 @@ def get_visualization_predicate():
     }
 
 @app.route("/api/visualize-trials", methods=['POST'])
+@cross_origin()
 def get_visualization_trials():
     device_description = request.form['device-description']
     indication_for_use = request.form['use-indication']
@@ -111,6 +118,7 @@ def get_visualization_trials():
     }
 
 @app.route("/api/similar-trials", methods=['POST'])
+@cross_origin()
 def similar_trials():
     device_description = request.form['device-description']
     all_trials = get_all_similar_trials(device_description)

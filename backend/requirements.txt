@@ -11,3 +11,4 @@ sentence_transformers
 pinecone-client
 nomic
 Gunicorn
+flask-cors
