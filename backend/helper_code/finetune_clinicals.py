@@ -4,7 +4,7 @@ import json
 import openai
 from pydantic import BaseModel, Field
 
-together_api_key = "8edaf787e9be1c89244aae8f7d903c46beb182215bf2e98d3d822a19850496ca"
+together_api_key = "26dac6e7a637994fd6e540067bf994c6e859aa517a3ff3794d7078d299cc7e84"
 together.api_key = together_api_key 
 wandb_api_key = "8b87053f36270a3afddd98e782ced32670927d85"
 # define model
@@ -150,7 +150,7 @@ def generate_eligibility(device):
 if __name__ == "__main__":
     file_id = load_data()
     # see if you want to finetune
-    start_finetune(file_id,m2)  
+    #start_finetune(file_id,m2)  
     #name = "pkafleprabhakar@gmail.com/Mistral-7B-Instruct-v0.2-test_510k_2-2024-02-18-04-44-40"
     # name of deployed 
     #deploy(name) 
@@ -167,4 +167,5 @@ if __name__ == "__main__":
     """
     #prompts = create_prompt(device)
     #print(inference(device,name,prompts["eligibility"]))
+    generate_eligibility(device)
 
