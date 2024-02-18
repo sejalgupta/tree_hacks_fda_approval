@@ -1,4 +1,5 @@
 from backend.helper_code.find_similar_clinical_trial import get_all_similar_trials
+from backend.helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
 from flask import Flask, render_template_string, request, redirect, url_for
 app = Flask(__name__)
@@ -45,6 +46,36 @@ def handle_form():
     return {
         "k_number_information": all_information,
         "comparison_table": list_comparisons
+    }
+
+@app.route("/api/visualize-predicate", methods=['POST'])
+def get_visualization_predicate():
+    device_description = request.form['device-description']
+    indication_for_use = request.form['use-indication']
+    user_data = {
+        "Device Description": device_description,
+        "Indication for Use": indication_for_use
+    }
+
+    url = visualize(user_data, "ns1", "k_number", "Visualize the closest devices to your device")
+
+    return {
+        "url": url
+    }
+
+@app.route("/api/visualize-trials", methods=['POST'])
+def get_visualization_trials():
+    device_description = request.form['device-description']
+    indication_for_use = request.form['use-indication']
+    user_data = {
+        "Device Description": device_description,
+        "Indication for Use": indication_for_use
+    }
+
+    url = visualize(user_data, "ns2", "nct_code", "Visualize the closest clinical trials to your expected trial")
+
+    return {
+        "url": url
     }
 
 @app.route("/api/similar-trials", methods=['POST'])
