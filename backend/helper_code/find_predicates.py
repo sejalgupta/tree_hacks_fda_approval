@@ -281,7 +281,7 @@ Brief Indications for use,here are some uses without any commas,here are some us
     csv_reader = csv.reader(csv_buffer)
     
     for row in csv_reader:
-        if len(row) == 4:
+        if len(row) == 4 and row[0].lower() in ["comparison fields", "brief device description", "device description", "indications for use", "brief indications for use"]:
             data.append(row)
 
     inner_end_time = time.time()
