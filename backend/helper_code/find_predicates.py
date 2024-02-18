@@ -19,7 +19,7 @@ index = pc.Index(index_name)
 
 def retrieve_pinecone(k_number, section_title):
     load_dotenv()
-    
+
     embedding = model.encode("")
 
     results = index.query(
