@@ -1,10 +1,9 @@
 import React from "react";
-import Chatbox from "./Chatbox";
-import WorkflowData from "../../components/workflowData";
+import Table from "./Table";
 
 function ClinicalTrials({ trials }) {
     const [currentIdx, setCurrentIdx] = React.useState(0);
-
+    console.log({trials});
   	return (
     	<section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
             <div className="h-full max-w-full">
@@ -32,7 +31,7 @@ function ClinicalTrials({ trials }) {
                 </header>
                 <div className="p-3">
                     <div className="overflow-x-auto">
-                        <Table data={trials[currentIdx]} />
+                        { trials && <Table data={trials[currentIdx]} />}
                     </div>
                 </div>
             </div>

@@ -3,6 +3,9 @@
 import ComparisonTable from './ComparisonTable'
 import IntroForm from './IntroForm'
 import Workflow from './Workflow'
+import ClinicalTrials from './ClinicalTrials'
+import TrialVisualization from './TrialVisualization'
+import Table from './Table'
 import React from 'react';
 
 enum ScreenTypes {
@@ -15,6 +18,7 @@ enum SubScreenTypes {
     Workflow = 'workflow',
     PredicateVisualization = 'predicateVisualization',
     ClinicalTrials = 'clinicalTrials',
+    MyTrials = 'myTrials',
 }
 
 // const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
@@ -28,7 +32,8 @@ export default function PredicateComparison() {
     const [comparisonData, setComparisonData] = React.useState<Record<string, String[][]>>({});
     const [comparisonOptions, setComparisonOptions] = React.useState<{"K": string, "Device Description": string, "Indications for use": string}[]>([]);
     const [comparisonId, setComparisonId] = React.useState<string>("");
-    const [clinicalTrials, setClinicalTrials] = React.useState<string[][]>();
+    const [clinicalTrials, setClinicalTrials] = React.useState<String[][][]>();
+    const [myTrial, setMyTrial] = React.useState<String[][]>();
 
     async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
         setScreenType(ScreenTypes.Results);
@@ -72,7 +77,10 @@ export default function PredicateComparison() {
         });
         const data = await response.json();
         console.log({data});
-        setClinicalTrials(data["all-trials"]);
+        const trails = data["all-trials"];
+        console.log({trails});
+        setClinicalTrials(trails);
+        console.log({clinicalTrials});
     }
 
     async function handleChangeComparison(k_number: string) {
@@ -107,9 +115,58 @@ export default function PredicateComparison() {
         setComparisonId(k_number);
     }
 
+    async function generateTrial() {
+        let formData = new FormData();
+        formData.append('device-description', description);
+        formData.append('use-indication', indication);
+        formData.append('all-trials', JSON.stringify(clinicalTrials));
+        const response = await fetch(`${BACKEND_BASE}api/generate-trial`, {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+        const trial = data["trial-info"];
+        console.log({data});
+        console.log({trial});
+        setMyTrial(trial);
+        setSubScreenType(SubScreenTypes.MyTrials);
+        console.log({myTrial});
+    }
+
+    function getResultScreen() {
+        switch (subScreenType) {
+            case SubScreenTypes.Comparison:
+                return <>
+                    <ComparisonTable
+                        key={comparisonId}
+                        data={comparisonData[comparisonId]}
+                        options={comparisonOptions}
+                        currentId={comparisonId}
+                        onChange={handleChangeComparison}
+                    />
+                    <button onClick={() => setSubScreenType(SubScreenTypes.Workflow)}>Next</button>
+                </>;
+            case SubScreenTypes.Workflow:
+                return <>
+                    <Workflow />
+                    <button onClick={handleClinicalTrials}>Find Clinical Trials</button>
+                </>;
+            case SubScreenTypes.ClinicalTrials:
+                return <>
+                    <ClinicalTrials trials={clinicalTrials} key={clinicalTrials?.length} />
+                    <button onClick={generateTrial}>Generate my trial</button>
+                </>;
+            case SubScreenTypes.MyTrials:
+                return myTrial && <Table data={myTrial} />;
+            case SubScreenTypes.PredicateVisualization:
+                return <TrialVisualization deviceDescription={description} useIndication={indication} />;
+        }
+    }
+
     return (
         <main className="my-20">
-            {screenType === ScreenTypes.InputForm
+            {
+                screenType === ScreenTypes.InputForm
                 ? <IntroForm
                     onSubmit={handleFormSubmit}
                     description={description}
@@ -117,15 +174,7 @@ export default function PredicateComparison() {
                     indication={indication}
                     setIndication={setIndication}
                 />
-                : (subScreenType === SubScreenTypes.Workflow
-                    ? <Workflow />
-                    : <ComparisonTable
-                        key={comparisonId}
-                        data={comparisonData[comparisonId]}
-                        options={comparisonOptions}
-                        currentId={comparisonId}
-                        onChange={handleChangeComparison}
-                    />)
+                : getResultScreen()
             }
         </main>
     )
