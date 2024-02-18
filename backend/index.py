@@ -16,6 +16,17 @@ CORS(app, resources={r"/api/*": {"origins": "https://tree-hacks-fda-approval-n8o
 
 nomic.login(os.getenv("NOMIC_API_KEY"))
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'https://tree-hacks-fda-approval-n8ognjakq-treehacks.vercel.app')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
+
+@app.route("/api/test-cors", methods=['POST', 'OPTIONS'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
+def test_cors():
+    return jsonify({"message": "CORS request successful"})
 
 @app.route("/api/test-cors", methods=['POST', 'OPTIONS'])
 @cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
