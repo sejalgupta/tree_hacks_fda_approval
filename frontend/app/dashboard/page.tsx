@@ -23,8 +23,8 @@ enum SubScreenTypes {
     MyTrials = 'myTrials',
 }
 
-// const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
 // const BACKEND_BASE: string = "http://localhost:3000/";
+// const BACKEND_BASE: string = "https://fda-approval-service.onrender.com/";
 const BACKEND_BASE:string = "https://5ba3-68-65-175-99.ngrok-free.app/";
 
 export default function PredicateComparison() {
