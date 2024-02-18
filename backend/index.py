@@ -43,6 +43,23 @@ def handle_form():
     # Process the form data (for demonstration, print it to console)
     print(f"Device Description: {device_description}")
     print(f"Indication for Use: {indication_for_use}")
+
+    device_data = {
+        "Device Description": device_description,
+        "Indication for Use": indication_for_use
+    }
+    all_information = []
+    if not k_number:
+        all_information = predicates(device_data)
+        # if len(all_information) > 1:
+        k_number_information = all_information[:1]
+    else:
+        k_number_information = [{
+            "K": k_number,
+            "Device Description": k_number_description,
+            "Indication for Use": k_number_use
+        }]
+    print("---------------- K number information: \n\n\n", str(k_number_information))
     
     return {
         "k_number_information": [{
@@ -62,22 +79,6 @@ def handle_form():
         ]
     }
 
-    device_data = {
-        "Device Description": device_description,
-        "Indication for Use": indication_for_use
-    }
-    all_information = []
-    if not k_number:
-        all_information = predicates(device_data)
-        # if len(all_information) > 1:
-        k_number_information = all_information[:1]
-    else:
-        k_number_information = [{
-            "K": k_number,
-            "Device Description": k_number_description,
-            "Indication for Use": k_number_use
-        }]
-    print("---------------- K number information: \n\n\n", str(k_number_information))
     list_comparisons = parallel_process(k_number_information, device_description, indication_for_use)
     
     return {
