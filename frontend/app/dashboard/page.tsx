@@ -79,9 +79,9 @@ export default function PredicateComparison() {
         });
         const data = await response.json();
         console.log({data});
-        const trails = data["all-trials"];
-        console.log({trails});
-        setClinicalTrials(trails);
+        const trials = data["all-trials"];
+        console.log({trials});
+        setClinicalTrials(trials);
         console.log({clinicalTrials});
     }
 

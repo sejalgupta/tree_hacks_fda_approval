@@ -20,7 +20,7 @@ function ClinicalTrials({ trials }) {
                                                 <input id={"clinical-trials-" + index} name="hs-horizontal-list-group-item-radio" type="radio" className="border-gray-200 rounded-full disabled:opacity-50 dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800" checked={currentIdx === index} onClick={() => setCurrentIdx(index)} />
                                             </div>
                                             <label for={"clinical-trials-" + index} className="ms-3 block w-full text-sm text-gray-600 dark:text-gray-500">
-                                                Clinical Trail { index }
+                                                Clinical Trial { index }
                                             </label>
                                         </div>
                                     </li>
