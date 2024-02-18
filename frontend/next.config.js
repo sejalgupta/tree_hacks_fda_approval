@@ -14,6 +14,7 @@ const nextConfig = {
   httpAgentOptions: {
     keepAlive: false,
   },
+  staticPageGenerationTimeout: 120,
 }
 
 module.exports = nextConfig

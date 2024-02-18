@@ -1,6 +1,6 @@
 import csv
 from io import StringIO
-from .chatgpt import ask_gpt
+from .chatgpt import ask_gpt_35
 from .find_similar_clinical_trial import get_all_similar_trials
 
 
@@ -26,7 +26,7 @@ Outcomes, here is the outcomes without any commas'''
     The format of your output should only be in a CSV string format like this {csv_string}
     """
     
-    response = ask_gpt(prompt)
+    response = ask_gpt_35(prompt)
     print("GPT RESPONSE", response)
 
     answer_csv_string = response["choices"][0]["message"]["content"]
