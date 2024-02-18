@@ -4,7 +4,7 @@ import json
 import re
 import requests
 from bs4 import BeautifulSoup
-from helper_code.save_k_numbers import get_fda_k_numbers, write_csv
+from .save_k_numbers import get_fda_k_numbers, write_csv
 
 def get_k_numbers(filename):
     k_numbers = []

@@ -2,18 +2,27 @@ import os
 import csv
 import requests
 from uuid import uuid4
-from create_vector_db import batch_upsert, encode_data, get_index
+from .create_vector_db import batch_upsert, encode_data, get_index
 import numpy as np
 import random
 from pinecone import Pinecone, ServerlessSpec, Index
 from sentence_transformers import SentenceTransformer
-from helper_code.extract_510k import get_all_links, get_k_numbers
-from helper_code.extract import download_pdf_to_file, extract_content_from_pdf
+from .helper_code.extract_510k import get_all_links, get_k_numbers
+from .helper_code.extract import download_pdf_to_file, extract_content_from_pdf
 # from unstructured.partition.pdf import partition_pdf
 # from unstructured.chunking.title import chunk_by_title
 from dotenv import load_dotenv
 
 def fetch_trial_description(rank):
+    """
+    Get the clinical trial descript
+
+    Args:
+        rank (int): the number of the clinical trial
+
+    Returns:
+        dict: the payload object to upsert for the record or None
+    """    
     # Send a GET request to the URL
     url = f'https://classic.clinicaltrials.gov/api/query/full_studies?expr=AREA[IsUnapprovedDevice]Yes OR AREA[IsFDARegulatedDevice]Yes&min_rnk={rank}&max_rnk={rank+1}&fmt=json'
     response = requests.get(url)

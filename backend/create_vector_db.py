@@ -5,8 +5,8 @@ import numpy as np
 import random
 from pinecone import Pinecone, ServerlessSpec, Index
 from sentence_transformers import SentenceTransformer
-from helper_code.extract_510k import get_all_links, get_k_numbers
-from helper_code.extract import download_pdf_to_file, extract_content_from_pdf
+from .helper_code.extract_510k import get_all_links, get_k_numbers
+from .helper_code.extract import download_pdf_to_file, extract_content_from_pdf
 # from unstructured.partition.pdf import partition_pdf
 # from unstructured.chunking.title import chunk_by_title
 from dotenv import load_dotenv
