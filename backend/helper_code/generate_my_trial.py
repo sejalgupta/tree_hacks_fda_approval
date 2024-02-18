@@ -1,8 +1,47 @@
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import csv
 from io import StringIO
 from .chatgpt import ask_gpt_35
 from .find_similar_clinical_trial import get_all_similar_trials
 
+def generate_35(device_description, indications_use, eligibility, all_trials, category_name):
+    prompt = f"""I want to creates a study design for a new device that I have created. 
+
+    This is the known information about the subject device:
+    1. Device Description: {device_description}
+    2. Indications for use: {indications_use}
+"""
+
+    if category_name == "Eligibility":
+        prompt += f"We believe that the eligibility is {eligibility}"
+
+    prompt += f"""
+    Here are some clinical trials that have similar designs to mine: {all_trials}
+
+    Can you please only generate and output a brief {category_name} for my study?
+    """
+    response = ask_gpt_35(prompt)
+    answer = response["choices"][0]["message"]["content"]
+    return [category_name, answer]
+    
+
+def clinical_parallel_process(categories, device_description, indications_for_use, eligibility, all_trials):
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = [executor.submit(generate_35, device_description, indications_for_use, eligibility, all_trials, category_name) for category_name in categories]
+        
+        results = [
+            ["Category", "Clinical Trial Specific Information"], 
+            ["Description", device_description],
+        ]
+        for future in as_completed(futures):
+            results.append(future.result())
+
+    return results
+
+def generate_my_clinical_trial_35(all_trials, device_description, indications_for_use, eligibility):
+    categories = ["Eligibility", "Design", "Intervention", "Outcomes"]
+    results = clinical_parallel_process(categories, device_description, indications_for_use, eligibility, all_trials)
+    return results
 
 def generate_my_clinical_trial(all_trials, device_description, indications_use, eligibility):
     csv_string = '''Category, Clinical Trial Specific Information

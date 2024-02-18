@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv()
 from helper_code.finetune_clinicals import generate_eligibility
-from helper_code.generate_my_trial import generate_my_clinical_trial
+from helper_code.generate_my_trial import generate_my_clinical_trial, generate_my_clinical_trial_35
 from helper_code.find_similar_clinical_trial import get_all_similar_trials
 from helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
@@ -117,7 +117,7 @@ def generate_trial():
     indications_use = request.form['use-indication']
     all_trials = request.form['all-trials']
     eligibility = generate_eligibility(device_description)
-    trial_info = generate_my_clinical_trial(all_trials, device_description, indications_use, eligibility)
+    trial_info = generate_my_clinical_trial_35(all_trials, device_description, indications_use, eligibility)
 
     return {
         "trial-info": trial_info
