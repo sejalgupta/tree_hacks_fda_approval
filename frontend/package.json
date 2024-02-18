@@ -7,7 +7,7 @@
     "flask": "FLASK_DEBUG=1 pip3 install -r ../backend/requirements.txt && python3 -m flask --app ../backend/index run -p 5328",
     "next-dev": "next dev",
     "dev": "concurrently \"npm run next-dev\" \"npm run flask-dev\" \"nomic login $NOMIC_API_KEY\"",
-    "build": "next build",
+    "build": "concurrently \"npm run next-dev\" \"npm run flask\" \"nomic login $NOMIC_API_KEY\"",
     "start": "next start",
     "lint": "next lint"
   },
