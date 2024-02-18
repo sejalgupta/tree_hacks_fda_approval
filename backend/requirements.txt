@@ -12,3 +12,4 @@ pinecone-client
 nomic
 Gunicorn
 flask-cors
+together
