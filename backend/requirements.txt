@@ -5,7 +5,6 @@ Werkzeug==2.2.2
 pandas==2.2.0
 python-dotenv
 pillow
-# nltk
 PyMuPDF
 sentence_transformers
 pinecone-client
@@ -13,3 +12,4 @@ nomic
 Gunicorn
 flask-cors
 together
+openai
