@@ -1,8 +1,8 @@
 import json
 from PIL import Image
 import fitz
-from nltk.metrics import jaccard_distance
-from nltk.util import ngrams
+# from nltk.metrics import jaccard_distance
+# from nltk.util import ngrams
 import requests
 
 HEADERS = [
@@ -37,9 +37,10 @@ def download_pdf_to_file(url, filename):
         return None
 
 def jaccard_similarity(word1, word2):
-    set1 = set(ngrams(word1.lower(), n=2))
-    set2 = set(ngrams(word2.lower(), n=2))
-    return 1 - jaccard_distance(set1, set2)
+    # set1 = set(ngrams(word1.lower(), n=2))
+    # set2 = set(ngrams(word2.lower(), n=2))
+    # return 1 - jaccard_distance(set1, set2)
+    pass
 
 def show_page(page):
     pix = page.get_pixmap()

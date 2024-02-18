@@ -5,7 +5,7 @@ Werkzeug==2.2.2
 pandas==2.2.0
 python-dotenv
 pillow
-nltk
+# nltk
 PyMuPDF
 sentence_transformers
 pinecone-client
