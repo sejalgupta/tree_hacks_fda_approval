@@ -145,17 +145,49 @@ export default function PredicateComparison() {
                         currentId={comparisonId}
                         onChange={handleChangeComparison}
                     />
-                    <button onClick={() => setSubScreenType(SubScreenTypes.Workflow)}>Next</button>
+                    <div className='container mx-auto flex flex-justify'>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.PredicateVisualization)}
+                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"Visualize"}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSubScreenType(SubScreenTypes.Workflow)}
+                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"Next>"}
+                        </button>
+                    </div>
                 </>;
             case SubScreenTypes.Workflow:
                 return <>
                     <Workflow />
-                    <button onClick={handleClinicalTrials}>Find Clinical Trials</button>
+                    <div className='container mx-auto flex flex-justify'>
+                        <button
+                            type="button"
+                            onClick={handleClinicalTrials}
+                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"Find Clinical Trials"}
+                        </button>
+                    </div>
+                    {/* <button onClick={handleClinicalTrials}>Find Clinical Trials</button> */}
                 </>;
             case SubScreenTypes.ClinicalTrials:
                 return <>
                     <ClinicalTrials trials={clinicalTrials} key={clinicalTrials?.length} />
-                    <button onClick={generateTrial}>Generate my trial</button>
+                    <div className='container mx-auto text-center'>
+                        <button
+                            type="button"
+                            onClick={generateTrial}
+                            className="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-blue-600 text-blue-600 hover:border-blue-500 hover:text-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600"
+                        >
+                            {"Find Clinical Trials"}
+                        </button>
+                    </div>
                 </>;
             case SubScreenTypes.MyTrials:
                 return myTrial && <Table data={myTrial} />;

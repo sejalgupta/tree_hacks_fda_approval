@@ -3,13 +3,13 @@ import React from "react";
 function Table({ data }) {
 
   	return (
-    	<table className="table-auto w-full">
-            <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+    	<table className="table-auto w-full bg-white shadow-md rounded-lg">
+            <thead className="text-xs font-semibold uppercase bg-gray-50">
                 <tr>
                     { data && data[0].map((item, index) => {
                     return (
                         <th className="p-2 min-w-20" key={"header-" + index}>
-                            <div className="font-semibold text-left">{ item }</div>
+                            <div className="font-semibold text-center">{ item }</div>
                         </th>
                     );
                     }) }

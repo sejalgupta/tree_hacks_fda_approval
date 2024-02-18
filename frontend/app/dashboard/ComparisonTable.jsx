@@ -4,11 +4,11 @@ import Table from "./Table";
 function ComparisonTable({ data, options, currentId, onChange }) {
 	console.log({data, options, currentId, onChange});
   return (
-    <section className="container mx-auto antialiased bg-gray-100 text-gray-600 min-h-screen p-4">
+    <section className="container mx-auto antialiased bg-gray-100 text-gray-600 p-4">
       <div className="h-full max-w-full">
-          <header className="px-5 py-4 border-b border-gray-100">
-				<h2 className="font-semibold text-gray-800">Predicate Comparison</h2>
-				<div className="flex items-center justify-between mt-2">
+          <header className="px-5 py-4 border-b border-gray-100 text-center">
+				<h1 className="text-2xl font-semibold text-gray-800">Predicate Comparison</h1>
+				<div className="flex items-center justify-center mt-2">
 					<ul class="flex flex-col sm:flex-row">
 					{ options && options.map((option, index) => {
 						console.log({currentId, option});
