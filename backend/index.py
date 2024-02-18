@@ -5,16 +5,22 @@ from helper_code.generate_my_trial import generate_my_clinical_trial
 from helper_code.find_similar_clinical_trial import get_all_similar_trials
 from helper_code.visualization import visualize
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
-from flask import Flask, render_template_string, request, redirect, url_for
+from flask import Flask, render_template_string, request, redirect, url_for, jsonify
 from flask_cors import CORS, cross_origin
 import nomic
 import os
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "https://tree-hacks-fda-approval-n8ognjakq-treehacks.vercel.app"}})
+CORS(app, resources={r"/api/*": {"origins": "https://tree-hacks-fda-approval-n8ognjakq-treehacks.vercel.app", "allow_headers": "*", "allow_methods": "*"}})
+# CORS(app, resources={r"/api/*": {"origins": "https://tree-hacks-fda-approval-n8ognjakq-treehacks.vercel.app"}})
 
 nomic.login(os.getenv("NOMIC_API_KEY"))
 
+
+@app.route("/api/test-cors", methods=['POST', 'OPTIONS'])
+@cross_origin(origin='*', headers=['Content-Type', 'Authorization'])
+def test_cors():
+    return jsonify({"message": "CORS request successful"})
 
 @app.route("/api/home")
 @cross_origin()
