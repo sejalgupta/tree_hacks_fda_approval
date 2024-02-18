@@ -1,6 +1,10 @@
 from helper_code.find_predicates import get_final_comparison_table, parallel_process, predicates
-from flask import Flask, render_template_string, request
+from flask import Flask, render_template_string, request, redirect, url_for
 app = Flask(__name__)
+
+@app.route("/api/python")
+def go_to_dashboard():
+    return redirect('/dashboard')
 
 @app.route("/api/handle-form", methods=['POST'])
 def handle_form():
