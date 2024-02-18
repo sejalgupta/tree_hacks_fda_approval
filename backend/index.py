@@ -11,6 +11,11 @@ app = Flask(__name__)
 load_dotenv()
 nomic.login(os.getenv("NOMIC_API_KEY"))
 
+
+@app.route("/api/home")
+def home():
+    return "Hello, hello!"
+
 @app.route("/api/python")
 def go_to_dashboard():
     return redirect('/dashboard')
