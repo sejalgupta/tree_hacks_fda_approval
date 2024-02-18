@@ -11,7 +11,7 @@ def ask_gpt(prompt):
         "Authorization": f"Bearer {api_key}"
     }
     payload = {
-        "model": "gpt-4-0125-preview",
+        "model": "gpt-4-turbo-preview",
         "messages": [{"role": "user", "content": prompt}],
         "max_tokens": 4096
     }

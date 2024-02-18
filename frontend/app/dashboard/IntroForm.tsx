@@ -1,16 +1,30 @@
 import React from "react";
 
-function IntroForm(props: { onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;}) {
+function IntroForm(props: {
+        onSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
+        description: string,
+        setDescription: (description: string) => void,
+        indication: string,
+        setIndication: (indication: string) => void,
+    }) {
     return (
         <section id="intro-form">
             <h1 className="text-center">Enter details of your device</h1>
-            <form onSubmit={props.onSubmit}>
+            <form onSubmit={props.onSubmit} id="info-form">
                 <div className="form-group my-5">
                     <label htmlFor="device-description" className="block text-sm font-medium mb-2 dark:text-white">
                         Device Description
                     </label>
-                    <textarea id="device-description" name="device-description" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" rows={3} placeholder="Say hi, we'll be happy to chat with you." aria-describedby="hs-textarea-helper-text">
-                    </textarea>
+                    <textarea
+                        id="device-description"
+                        name="device-description"
+                        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600"
+                        rows={3}
+                        placeholder="Say hi, we'll be happy to chat with you."
+                        aria-describedby="hs-textarea-helper-text"
+                        value={props.description}
+                        onChange={(e) => props.setDescription(e.target.value)}
+                    ></textarea>
                     <p className="text-xs text-gray-500 mt-2" id="hs-textarea-helper-text">
                         We'll get back to you soon.
                     </p>
@@ -19,8 +33,16 @@ function IntroForm(props: { onSubmit: (e: React.FormEvent<HTMLFormElement>) => v
                     <label htmlFor="use-indication" className="block text-sm font-medium mb-2 dark:text-white">
                         Indication of use
                     </label>
-                    <textarea id="use-indication" name="use-indication" className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" rows={3} placeholder="Say hi, we'll be happy to chat with you." aria-describedby="hs-textarea-helper-text">
-                    </textarea>
+                    <textarea
+                        id="use-indication"
+                        name="use-indication"
+                        className="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-slate-900 dark:border-gray-700 dark:text-gray-400 dark:focus:ring-gray-600" 
+                        rows={3} 
+                        placeholder="Say hi, we'll be happy to chat with you." 
+                        aria-describedby="hs-textarea-helper-text"
+                        value={props.indication}
+                        onChange={(e) => props.setIndication(e.target.value)}
+                    ></textarea>
                     <p className="text-xs text-gray-500 mt-2" id="hs-textarea-helper-text">
                         We'll get back to you soon.
                     </p>

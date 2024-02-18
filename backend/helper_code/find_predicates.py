@@ -66,7 +66,7 @@ def calculate_product_scores_general(data_list, texts):
     final_list = [(key, product_scores[key]) for key in sorted_keys]
     results = [] 
     for x in final_list: 
-        results.append({'K':x[0], '"Device Description': texts[0][x[0]], 'Indications for use': texts[1][x[0]]})
+        results.append({'K':x[0], 'Device Description': texts[0][x[0]], 'Indications for use': texts[1][x[0]]})
     return results
 
 def predicates(user_data):  
